@@ -1,0 +1,387 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Infografía - Álgebra Relacional (Unarias y Binarias) | Modelado de Datos</title>
+  <style>
+    :root{
+      --blue:#0b5bbf; --dark:#0b2f55; --muted:#6b7280; --bg:#f6f8fb;
+      --card:#ffffff;
+    }
+    *{box-sizing:border-box}
+    body{
+      margin:0; font-family:Inter, system-ui, -apple-system, 'Segoe UI', Roboto, Arial;
+      background:var(--bg); color:var(--dark); padding:28px;
+    }
+    .container{max-width:1200px; margin:0 auto}
+    .card{background:var(--card); border-radius:12px; padding:22px; box-shadow:0 10px 30px rgba(11,47,85,0.06)}
+    header{display:flex; gap:18px; align-items:center; border-bottom:1px solid #e6edf6; padding-bottom:16px}
+    .logo{width:80px; height:80px; border-radius:10px; background:linear-gradient(180deg,var(--blue),#2d82d6); color:white; display:flex; align-items:center; justify-content:center; font-weight:800}
+    h1{margin:0; font-size:20px}
+    .meta{color:var(--muted); font-size:13px}
+    .badge{background:linear-gradient(90deg,var(--blue),#2d82d6); color:white; padding:6px 10px; border-radius:999px; font-weight:700; font-size:13px}
+    .grid{display:grid; grid-template-columns:1fr 360px; gap:18px; margin-top:18px}
+    .section{margin-bottom:14px}
+    .box{background:#fcfeff; border-radius:10px; padding:14px; border:1px solid #e9f1fb; margin-bottom:10px}
+    .three-col{display:grid; grid-template-columns:repeat(3,1fr); gap:12px}
+    h2{color:var(--blue); margin:10px 0}
+    h3{margin:8px 0}
+    pre{background:#0b2f55; color:white; padding:12px; border-radius:8px; overflow:auto; font-size:13px; line-height:1.45}
+    code{font-family:Consolas, 'Courier New', monospace; font-size:13px}
+    ul{margin:8px 0 8px 18px}
+    table{width:100%; border-collapse:collapse; margin-top:8px}
+    th, td{padding:6px 8px; border:1px solid #eef4fb; text-align:left; font-size:13px}
+    .footer{display:flex; justify-content:space-between; align-items:center; margin-top:10px; color:var(--muted); font-size:13px; border-top:1px solid #eef4fb; padding-top:10px}
+    @media (max-width:980px){
+      .grid{grid-template-columns:1fr}
+      .three-col{grid-template-columns:1fr}
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="card">
+      <header>
+        <div class="logo">UAC</div>
+        <div style="flex:1">
+          <h1>Operaciones del Álgebra Relacional — Infografía práctica</h1>
+          <div class="meta">"Año de la Recuperación y Consolidación de la Economía Peruana" • UNIVERSIDAD ANDINA DEL CUSCO — Facultad de Ingeniería y Arquitectura</div>
+        </div>
+        <div style="text-align:right">
+          <div class="badge">Modelado de Datos</div>
+          <div class="meta" style="margin-top:6px">Docente: Ing. Hugo Espetia Huamanga</div>
+        </div>
+      </header>
+
+      <div class="grid">
+        <!-- MAIN CONTENT -->
+        <main>
+          <!-- INTRO -->
+          <section class="section">
+            <h2>Introducción</h2>
+            <div class="box">
+              <p>Esta infografía integra los conceptos teóricos del álgebra relacional con ejemplos prácticos utilizando ADO.NET Entity Framework (LINQ) y SQL. Se desarrollan operaciones <strong>unarias</strong> (selección, proyección, renombramiento) y <strong>binarias</strong> (unión, intersección, diferencia, producto cartesiano, join), con ejemplos, notación y código listo para usar en un proyecto de modelado de datos.</p>
+            </div>
+          </section>
+
+          <!-- OBJETIVO -->
+          <section class="section">
+            <h2>Objetivo</h2>
+            <div class="box">
+              <p>Aplicar y demostrar las operaciones fundamentales del álgebra relacional mediante consultas SQL y LINQ (Entity Framework), promoviendo la comprensión teórica y su traducción a implementaciones reales en proyectos .NET.</p>
+            </div>
+          </section>
+
+          <!-- SAMPLE SCHEMA -->
+          <section class="section">
+            <h2>Esquema de tablas de ejemplo</h2>
+            <div class="box">
+              <p>Usaremos estas tablas de ejemplo en los ejercicios:</p>
+              <pre><code>-- Tabla: Estudiante
+CREATE TABLE Estudiante (
+  IdEstudiante INT PRIMARY KEY,
+  Nombres VARCHAR(100),
+  Edad INT,
+  Carrera VARCHAR(80),
+  IdCurso INT
+);
+
+-- Tabla: Curso
+CREATE TABLE Curso (
+  IdCurso INT PRIMARY KEY,
+  NombreCurso VARCHAR(100),
+  Creditos INT
+);
+
+-- Tabla: Producto (para ejemplos de negocio)
+CREATE TABLE Producto (
+  IdProducto INT PRIMARY KEY,
+  Nombre VARCHAR(120),
+  Stock INT,
+  Precio DECIMAL(10,2)
+);
+
+-- Tabla: Cliente
+CREATE TABLE Cliente (
+  IdCliente INT PRIMARY KEY,
+  Nombres VARCHAR(120),
+  Correo VARCHAR(120),
+  Saldo DECIMAL(12,2)
+);
+</code></pre>
+            </div>
+          </section>
+
+          <!-- UNARIAS -->
+          <section class="section">
+            <h2>Operaciones Unarias</h2>
+
+            <div class="three-col">
+              <!-- SELECCION -->
+              <div class="box">
+                <h3>Selección (σ)</h3>
+                <p><strong>¿Qué halla?</strong> Filas que cumplen una condición.</p>
+                <p><strong>Notación:</strong> σ<sub>cond</sub>(R)</p>
+
+                <h4>Ejemplo 1 (texto)</h4>
+                <p>Obtener estudiantes con edad &gt; 18.</p>
+
+                <h4>SQL</h4>
+                <pre><code>SELECT * FROM Estudiante WHERE Edad > 18;</code></pre>
+
+                <h4>LINQ / EF (C#)</h4>
+                <pre><code>// DbContext: db
+var mayores18 = db.Estudiantes
+                  .Where(e => e.Edad > 18)
+                  .ToList();</code></pre>
+
+                <h4>Ejemplo 2 (rango)</h4>
+                <pre><code>-- SQL: productos con stock entre 10 y 50
+SELECT * FROM Producto WHERE Stock BETWEEN 10 AND 50;
+
+-- LINQ:
+var prodRange = db.Productos
+                  .Where(p => p.Stock >= 10 && p.Stock <= 50)
+                  .ToList();</code></pre>
+
+                <h4>Ejemplo 3 (pertenencia)</h4>
+                <pre><code>-- SQL: clientes con saldo > 1000
+SELECT * FROM Cliente WHERE Saldo > 1000;
+
+-- LINQ:
+var ricos = db.Clientes.Where(c => c.Saldo > 1000).ToList();</code></pre>
+              </div>
+
+              <!-- PROYECCION -->
+              <div class="box">
+                <h3>Proyección (π)</h3>
+                <p><strong>¿Qué halla?</strong> Conjunto de columnas (atributos) seleccionadas.</p>
+                <p><strong>Notación:</strong> π<sub>atributos</sub>(R)</p>
+
+                <h4>Ejemplo 1</h4>
+                <p>Obtener Nombre y Carrera de estudiantes.</p>
+
+                <h4>SQL</h4>
+                <pre><code>SELECT Nombres, Carrera FROM Estudiante;</code></pre>
+
+                <h4>LINQ / EF</h4>
+                <pre><code>var lista = db.Estudiantes
+             .Select(e => new { e.Nombres, e.Carrera })
+             .ToList();</code></pre>
+
+                <h4>Eliminar duplicados</h4>
+                <pre><code>-- SQL
+SELECT DISTINCT Carrera FROM Estudiante;
+
+-- LINQ
+var carreras = db.Estudiantes.Select(e => e.Carrera).Distinct().ToList();</code></pre>
+
+                <h4>Proyección en DTO / export</h4>
+                <pre><code>// LINQ proyectando a DTO para exportar
+var dto = db.Clientes
+            .Select(c => new ClienteExport { Nombre = c.Nombres, Email = c.Correo })
+            .ToList();</code></pre>
+              </div>
+
+              <!-- RENOMBRAMIENTO -->
+              <div class="box">
+                <h3>Renombramiento (ρ)</h3>
+                <p><strong>¿Qué halla?</strong> Cambia nombre de columnas o resultados para claridad.</p>
+                <p><strong>Notación:</strong> ρ<sub>nuevoNombre</sub>(R)</p>
+
+                <h4>Ejemplo</h4>
+                <p>Renombrar `Nombres` a `NombreCompleto`.</p>
+
+                <h4>SQL</h4>
+                <pre><code>SELECT Nombres AS NombreCompleto FROM Estudiante;</code></pre>
+
+                <h4>LINQ / EF</h4>
+                <pre><code>var ren = db.Estudiantes
+            .Select(e => new { NombreCompleto = e.Nombres, e.Carrera })
+            .ToList();</code></pre>
+
+                <h4>Preparar cabeceras para CSV</h4>
+                <pre><code>var export = db.Productos
+                .Select(p => new {
+                  SKU = p.IdProducto,
+                  NombreProducto = p.Nombre,
+                  Precio = p.Precio
+                }).ToList();</code></pre>
+              </div>
+            </div>
+          </section>
+
+          <!-- BINARIAS -->
+          <section class="section">
+            <h2>Operaciones Binarias</h2>
+
+            <div class="box">
+              <h3>UNIÓN (A ∪ B)</h3>
+              <p>Combina filas de dos relaciones compatibles (mismas columnas).</p>
+
+              <h4>SQL</h4>
+              <pre><code>SELECT IdEstudiante, Nombres FROM Estudiante_A
+UNION
+SELECT IdEstudiante, Nombres FROM Estudiante_B;</code></pre>
+
+              <h4>LINQ</h4>
+              <pre><code>var union = tablaA.Select(x => new { x.Id, x.Nombre })
+                      .Union(tablaB.Select(x => new { x.Id, x.Nombre }))
+                      .ToList();</code></pre>
+            </div>
+
+            <div class="box">
+              <h3>INTERSECCIÓN (A ∩ B)</h3>
+              <p>Filas que aparecen en ambas relaciones.</p>
+
+              <h4>SQL</h4>
+              <pre><code>SELECT * FROM Estudiante_A
+INTERSECT
+SELECT * FROM Estudiante_B;</code></pre>
+
+              <h4>LINQ</h4>
+              <pre><code>var inter = tablaA.Intersect(tablaB).ToList();</code></pre>
+            </div>
+
+            <div class="box">
+              <h3>DIFERENCIA / EXCEPCIÓN (A − B)</h3>
+              <p>Filas en A que no están en B.</p>
+
+              <h4>SQL</h4>
+              <pre><code>SELECT * FROM Estudiante_A
+EXCEPT
+SELECT * FROM Estudiante_B;</code></pre>
+
+              <h4>LINQ</h4>
+              <pre><code>var diff = tablaA.Except(tablaB).ToList();</code></pre>
+            </div>
+
+            <div class="box">
+              <h3>PRODUCTO CARTESIANO (A × B)</h3>
+              <p>Todas las combinaciones posibles de filas entre A y B.</p>
+
+              <h4>SQL</h4>
+              <pre><code>SELECT * FROM A, B;
+-- ó
+SELECT * FROM A CROSS JOIN B;</code></pre>
+
+              <h4>LINQ</h4>
+              <pre><code>var prod = from a in tablaA
+           from b in tablaB
+           select new { a, b };</code></pre>
+            </div>
+
+            <div class="box">
+              <h3>JOIN (⨝) — INNER JOIN, LEFT JOIN, etc.</h3>
+              <p>Une tablas por atributos relacionados.</p>
+
+              <h4>INNER JOIN (SQL)</h4>
+              <pre><code>SELECT e.Nombres, c.NombreCurso
+FROM Estudiante e
+INNER JOIN Curso c ON e.IdCurso = c.IdCurso;</code></pre>
+
+              <h4>INNER JOIN (LINQ)</h4>
+              <pre><code>var join = db.Estudiantes
+          .Join(db.Cursos,
+                e => e.IdCurso,
+                c => c.IdCurso,
+                (e, c) => new { e.Nombres, c.NombreCurso })
+          .ToList();</code></pre>
+
+              <h4>LEFT JOIN (LINQ - método)</h4>
+              <pre><code>var left = db.Estudiantes
+           .GroupJoin(db.Cursos,
+                      e => e.IdCurso,
+                      c => c.IdCurso,
+                      (e, cursoGroup) => new { e, cursoGroup })
+           .SelectMany(x => x.cursoGroup.DefaultIfEmpty(),
+                       (x, c) => new { Estudiante = x.e.Nombres, Curso = c == null ? \"(sin curso)\" : c.NombreCurso })
+           .ToList();</code></pre>
+            </div>
+          </section>
+
+          <!-- EJERCICIOS PROPUESTOS -->
+          <section class="section">
+            <h2>Ejercicios sugeridos (resuelve y demuestra)</h2>
+            <div class="box">
+              <ol>
+                <li>Selección: Obtener clientes con saldo &gt; 5000 y correo no nulo. (SQL + LINQ)</li>
+                <li>Proyección: Listar solo IdProducto y Nombre de productos con precio &lt; 50, eliminar duplicados.</li>
+                <li>Renombramiento: Exportar lista de productos con cabeceras legibles (SKU, NombreProducto, Precio).</li>
+                <li>Unión: Unir dos listas de estudiantes de dos secciones y eliminar duplicados.</li>
+                <li>Diferencia: Obtener estudiantes inscritos en la sección A pero no en la B.</li>
+                <li>Producto cartesiano: Generar pares (Estudiante, Curso) y filtrar los que cumplen una condición (ej. créditos &gt; 2).</li>
+                <li>Join: Obtener nombres de estudiantes con sus cursos (INNER JOIN y LEFT JOIN).</li>
+              </ol>
+              <p>Cada ejercicio debe incluir: objetivo, consulta SQL, consulta LINQ (Entity Framework), y resultado esperado con mini dataset.</p>
+            </div>
+          </section>
+
+          <!-- BUENAS PRACTICAS -->
+          <section class="section">
+            <h2>Buenas prácticas</h2>
+            <div class="box">
+              <ul>
+                <li>Crear seed/data de ejemplo para poder reproducir resultados.</li>
+                <li>Documentar cada consulta: propósito, complejidad esperada y casos límite.</li>
+                <li>Usar DTOs para proyectos y exportaciones (evitar devolver entidades directamente en vistas).</li>
+                <li>Incluir tests unitarios para consultas críticas (p. ej. métodos que organicen filtros).</li>
+                <li>Organizar el repo: /Models, /Data, /Services/Queries, /Docs, README con pasos para ejecutar migrations y seed.</li>
+              </ul>
+            </div>
+          </section>
+
+          <!-- CONCLUSION -->
+          <section class="section">
+            <h2>Conclusión</h2>
+            <div class="box">
+              <p>La práctica de operaciones del álgebra relacional con ADO.NET Entity Framework facilita la transición entre la teoría matemática y las implementaciones reales. SQL y LINQ son herramientas complementarias: SQL es la base, LINQ ofrece integración fluida en .NET. Resolver los ejercicios propuestos ayuda a consolidar modelado de datos, habilidades de consulta y documentación técnica.</p>
+            </div>
+          </section>
+        </main>
+
+        <!-- SIDEBAR -->
+        <aside>
+          <div class="box section">
+            <h3>Datos del trabajo</h3>
+            <p class="meta"><strong>Asignatura:</strong> Modelado de Datos<br>
+              <strong>Alumnos:</strong><br>
+              Cusihuaman Concha Danny Sebastian<br>
+              Ninancuro Carcamo Diego<br>
+              Quispe Champi Karin Rubina (S.M)</p>
+            <p class="meta"><strong>Cusco – Perú</strong><br>2025-II</p>
+          </div>
+
+          <div class="box section">
+            <h3>Repositorio (README mínimo)</h3>
+            <ul>
+              <li>Requisitos: .NET SDK (7+), EF Core Tools</li>
+              <li>Comandos: <code>dotnet ef database update</code>, <code>dotnet run</code></li>
+              <li>Incluir: migrations, seed sample data, ejemplos de queries en /Docs/queries.md</li>
+            </ul>
+          </div>
+
+          <div class="box section">
+            <h3>Consejos para la exposición</h3>
+            <ul>
+              <li>Mostrar modelo ER y explicar la relación entre tablas.</li>
+              <li>Ejecutar 3–4 consultas (SQL y LINQ) en vivo en Visual Studio.</li>
+              <li>Mostrar resultados con datos seed para validar la salida.</li>
+              <li>Preparar respuestas sobre por qué usar LINQ vs SQL bruto.</li>
+            </ul>
+          </div>
+        </aside>
+      </div>
+
+      <div class="footer">
+        <div>
+          <strong>Cusihuaman C., Ninancuro D., Quispe K.</strong><br>
+          <span class="meta">Docente: Ing. Hugo Espetia Huamanga</span>
+        </div>
+        <div class="meta">Generado: 2025 — Infografía técnica</div>
+      </div>
+    </div>
+  </div>
+</body>
+</html>
